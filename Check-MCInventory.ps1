@@ -5,6 +5,7 @@
 #	Date: 10/21/2020														
 #	Description: This script accepts a MicroCenter product URL and 
 #	returns the inStock status			 		
+#	DISCLAIMER: I AM NOT AFFILIATED WITH MicroCenter IN ANY WAY
 #																		
 ########################################################################
 #
