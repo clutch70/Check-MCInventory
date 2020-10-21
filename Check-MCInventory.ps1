@@ -22,19 +22,20 @@ $counter = 1
 
 function getMcHtml
 	{
+		$date = Get-Date
 		$request = Invoke-WebRequest -URI $productUri
 		$request = $request.toString() -split "[`r`n]"
 		$request = $request | Select-String "'inStock'"
 		
 		IF ($request -like "*False*")
 			{
-				write-output "Item is not in stock..."
+				write-output "Item is not in stock at $date..."
 				#write-output "Test result is $request"
 				$inStock = $false
 			}
 		IF ($request -like "*True*")
 			{
-				write-output "Item is in stock!!!"
+				write-output "Item is in stock as of $date!!!"
 				[console]::beep(1000,500)
 				[console]::beep(1000,500)
 				[console]::beep(1000,500)
