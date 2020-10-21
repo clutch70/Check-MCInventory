@@ -48,7 +48,7 @@ function getMcHtml
 		$request = $request | Select-String "'inStock'"
 		
 		write-output "***********************************************"
-		Write-Output "title is $title"
+		Write-Output $title
 		
 		#If the item is NOT currently in stock
 		IF ($request -like "*False*")
