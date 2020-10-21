@@ -19,7 +19,7 @@
 #
 
 
-param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled)
+param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled, [switch]$logging)
 $counter = 1
 
 cls
@@ -37,6 +37,10 @@ write-output "
 #Function to invoke the HTTP GET and determine if the item is in stock
 function getMcHtml
 	{
+		$functionLog
+		$logFolder = "Check-MCInventory"
+		$logDirectory = $env:LOCALAPPDATA
+		$logFilename = "mcinventory.txt"
 		$date = Get-Date
 		#Get the HTML content of the provided product page
 		$request = Invoke-WebRequest -URI $productUri
@@ -49,19 +53,37 @@ function getMcHtml
 		
 		write-output "***********************************************"
 		Write-Output $title
+			$functionLog = $functionLog + "***********************************************"
+			$functionLog = $functionLog + "`n" + $title
+			$functionLog = $functionLog + "`n" + $productUri
 		
 		#If the item is NOT currently in stock
 		IF ($request -like "*False*")
 			{
 				write-output "Item is not in stock at $date..."
+					$functionLog = $functionLog + "`n" + "Item is not in stock at " + $date + "..."
 				#write-output "Test result is $request"
 				$inStock = $false
+				
+				IF ($logging -eq $true)
+					{
+						#Write-Output "testDir is $testDir"
+						#Write-Output "fullLogPath is $fullLogPath"
+						$testDir = $logDirectory + "\" + $logFolder
+						$fullLogPath = $testDir + "\" + $logFilename
+						IF (!(Test-Path $testDir))
+							{
+								New-Item -Path $testDir -ItemType "Directory"
+							}
+						$functionLog | out-file $fullLogPath -append
+					}
 			}
 		
 		#If the item IS currently in stock
 		IF ($request -like "*True*")
 			{
 				write-output "Item is in stock as of $date!!!"
+					$functionLog = $functionLog + "Item is in stock as of " + $date
 				#Beep the user's console
 				[console]::beep(1000,1500)
 				[console]::beep(1000,1500)
@@ -73,7 +95,22 @@ function getMcHtml
 						$pushMessage = "The item you are monitoring at MicroCenter is now in stock. " + $title + "`n`n" + $productUri
 						$push = Send-PushoverMessage -title "Item In Stock" -message "$pushMessage" -sound "siren" -user "u1u24KYp2tAbk33xxQQ4S78rndVGi6" -token "an43nea6wojncnod7f32unz4ees66n"
 						Write-Output "Push alert is sent!!!"
+							$functionLog = $functionLog + "`n" + "Push alert is sent"
 					}
+				
+				IF ($logging -eq $true)
+					{
+						Write-Output "testDir is $testDir"
+						Write-Output "fullLogPath is $fullLogPath"
+						$testDir = $logDirectory + "\" + $logFolder
+						$fullLogPath = $testDir + "\" + $logFilename
+						IF (!(Test-Path $testDir))
+							{
+								New-Item -Path $testDir -ItemType "Directory"
+							}
+						$functionLog | out-file $fullLogPath -append
+					}
+				
 				pause
 				Remove-Variable title -Force
 				Remove-Variable request -Force
@@ -99,7 +136,7 @@ DO
 			}
 		
 		#Call the main function
-		getMcHtml($productUri)
+		getMcHtml($productUri,$logging)
 		
 		#Increment the counter so we honor repeatCount
 		$counter = $counter + 1
