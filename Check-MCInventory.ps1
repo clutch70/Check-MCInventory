@@ -28,11 +28,14 @@ function getMcHtml
 		$date = Get-Date
 		#Get the HTML content of the provided product page
 		$request = Invoke-WebRequest -URI $productUri
+		#Get the title out of the ParsedHtml data
+		$title = $request.ParsedHtml.title
 		#Chop the HTML content into lines
 		$request = $request.toString() -split "[`r`n]"
 		#Find the inStock line
 		$request = $request | Select-String "'inStock'"
-		$title = request.ParsedHtml.title
+		
+		Write-Output "title is $title"
 		
 		#If the item is NOT currently in stock
 		IF ($request -like "*False*")
@@ -54,9 +57,12 @@ function getMcHtml
 				$inStock = $true
 				IF ($pushEnabled -eq $true)
 					{
-						Send-PushoverMessage -title $title -message "The item you are monitoring at MicroCenter is now in stock." -sound "siren" -user "u1u24KYp2tAbk33xxQQ4S78rndVGi6" -token "an43nea6wojncnod7f32unz4ees66n"
+						$pushMessage = "The itme you are monitoring at MicroCenter is now in stock. " + $title
+						Send-PushoverMessage -title "Item In Stock" -message "$pushMessage" -sound "siren" -user "u1u24KYp2tAbk33xxQQ4S78rndVGi6" -token "an43nea6wojncnod7f32unz4ees66n"
 					}
 				pause
+				Remove-Variable title -Force
+				Remove-Variable request -Force
 				exit
 			}
 		#Return the stock status for future use
