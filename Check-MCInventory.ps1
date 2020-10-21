@@ -19,7 +19,7 @@
 #
 
 
-param ($productUri, $repeatCount=1, $repeatInterval=30)
+param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled)
 $counter = 1
 
 #Function to invoke the HTTP GET and determine if the item is in stock
@@ -51,6 +51,10 @@ function getMcHtml
 				[console]::beep(1000,1500)
 				#write-output "Test result is $request"
 				$inStock = $true
+				IF ($pushEnabled -eq $true)
+					{
+						Send-PushoverMessage -title "Item In Stock" -message "The item you are monitoring at MicroCenter is now in stock." -sound "siren" -user "u1u24KYp2tAbk33xxQQ4S78rndVGi6" -token "an43nea6wojncnod7f32unz4ees66n"
+					}
 				pause
 				exit
 			}
