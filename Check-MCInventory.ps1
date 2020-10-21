@@ -46,9 +46,9 @@ function getMcHtml
 			{
 				write-output "Item is in stock as of $date!!!"
 				#Beep the user's console
-				[console]::beep(1000,500)
-				[console]::beep(1000,500)
-				[console]::beep(1000,500)
+				[console]::beep(1000,1500)
+				[console]::beep(1000,1500)
+				[console]::beep(1000,1500)
 				#write-output "Test result is $request"
 				$inStock = $true
 				pause
