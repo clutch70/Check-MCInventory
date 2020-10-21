@@ -12,7 +12,8 @@
 #	Your product URI will be formatted similarly to the example below
 #	https://www.microcenter.com/product/608318/amd-ryzen-7-3700x-matisse-36ghz-8-core-am4-boxed-processor-with-wraith-prism-cooler
 #	Your mileage may vary based on the selected store/future site updates/etc...
-#
+#	If you do not specify repeatCount, you only want to check once
+#	If you do not specify repeatInterval, the default wait is 30 seconds in between checks
 #
 #
 
