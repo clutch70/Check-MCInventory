@@ -70,8 +70,8 @@ function getMcHtml
 				$inStock = $true
 				IF ($pushEnabled -eq $true)
 					{
-						$pushMessage = "The itme you are monitoring at MicroCenter is now in stock. " + $title + "`n`n" + $productUri
-						Send-PushoverMessage -title "Item In Stock" -message "$pushMessage" -sound "siren" -user "u1u24KYp2tAbk33xxQQ4S78rndVGi6" -token "an43nea6wojncnod7f32unz4ees66n"
+						$pushMessage = "The item you are monitoring at MicroCenter is now in stock. " + $title + "`n`n" + $productUri
+						$push = Send-PushoverMessage -title "Item In Stock" -message "$pushMessage" -sound "siren" -user "u1u24KYp2tAbk33xxQQ4S78rndVGi6" -token "an43nea6wojncnod7f32unz4ees66n"
 					}
 				pause
 				Remove-Variable title -Force
