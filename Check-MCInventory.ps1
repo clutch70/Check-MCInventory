@@ -32,6 +32,7 @@ function getMcHtml
 		$request = $request.toString() -split "[`r`n]"
 		#Find the inStock line
 		$request = $request | Select-String "'inStock'"
+		$title = request.ParsedHtml.title
 		
 		#If the item is NOT currently in stock
 		IF ($request -like "*False*")
@@ -53,7 +54,7 @@ function getMcHtml
 				$inStock = $true
 				IF ($pushEnabled -eq $true)
 					{
-						Send-PushoverMessage -title "Item In Stock" -message "The item you are monitoring at MicroCenter is now in stock." -sound "siren" -user "u1u24KYp2tAbk33xxQQ4S78rndVGi6" -token "an43nea6wojncnod7f32unz4ees66n"
+						Send-PushoverMessage -title $title -message "The item you are monitoring at MicroCenter is now in stock." -sound "siren" -user "u1u24KYp2tAbk33xxQQ4S78rndVGi6" -token "an43nea6wojncnod7f32unz4ees66n"
 					}
 				pause
 				exit
