@@ -22,6 +22,15 @@
 param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled)
 $counter = 1
 
+write-output "
+
+   ________  _______ _   ______________   _____ __________  ________  ___________
+  / ____/ / / / ___// | / / ____/_  __/  / ___// ____/ __ \/  _/ __ \/_  __/ ___/
+ / /   / / / /\__ \/  |/ / __/   / /     \__ \/ /   / /_/ // // /_/ / / /  \__ \ 
+/ /___/ /_/ /___/ / /|  / /___  / /     ___/ / /___/ _, _// // ____/ / /  ___/ / 
+\____/\____//____/_/ |_/_____/ /_/     /____/\____/_/ |_/___/_/     /_/  /____/  
+                                                                                 "
+
 #Function to invoke the HTTP GET and determine if the item is in stock
 function getMcHtml
 	{
