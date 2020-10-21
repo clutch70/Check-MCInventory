@@ -22,22 +22,30 @@
 param ($productUri, $repeatCount=1, $repeatInterval=30)
 $counter = 1
 
+#Function to invoke the HTTP GET and determine if the item is in stock
 function getMcHtml
 	{
 		$date = Get-Date
+		#Get the HTML content of the provided product page
 		$request = Invoke-WebRequest -URI $productUri
+		#Chop the HTML content into lines
 		$request = $request.toString() -split "[`r`n]"
+		#Find the inStock line
 		$request = $request | Select-String "'inStock'"
 		
+		#If the item is NOT currently in stock
 		IF ($request -like "*False*")
 			{
 				write-output "Item is not in stock at $date..."
 				#write-output "Test result is $request"
 				$inStock = $false
 			}
+		
+		#If the item IS currently in stock
 		IF ($request -like "*True*")
 			{
 				write-output "Item is in stock as of $date!!!"
+				#Beep the user's console
 				[console]::beep(1000,500)
 				[console]::beep(1000,500)
 				[console]::beep(1000,500)
@@ -46,19 +54,26 @@ function getMcHtml
 				pause
 				exit
 			}
-		
+		#Return the stock status for future use
 		return $inStock
 	}
 
+#This loop runs while the counter is less than repeatCount
 DO
 	{
+		#If we haven't run yet, don't bother sleeping
 		IF ($counter -ne 1)
 			{
 				#Write-Output "Last stock status was $inStock..."
 				Write-Output "Sleeping $repeatInterval seconds..."
+				#Sleep in between each HTTP GET request
 				Start-Sleep -seconds $repeatInterval
 			}
+		
+		#Call the main function
 		getMcHtml($productUri)
+		
+		#Increment the counter so we honor repeatCount
 		$counter = $counter + 1
 		
 	
