@@ -44,6 +44,7 @@ function getMcHtml
 		#Find the inStock line
 		$request = $request | Select-String "'inStock'"
 		
+		write-output "***********************************************"
 		Write-Output "title is $title"
 		
 		#If the item is NOT currently in stock
@@ -86,6 +87,9 @@ DO
 			{
 				#Write-Output "Last stock status was $inStock..."
 				Write-Output "Sleeping $repeatInterval seconds..."
+				write-output "***********************************************"
+				write-output "`n"
+				write-output "`n"
 				#Sleep in between each HTTP GET request
 				Start-Sleep -seconds $repeatInterval
 			}
