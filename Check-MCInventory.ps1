@@ -22,7 +22,10 @@
 param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled)
 $counter = 1
 
+cls
+
 write-output "
+
 
    ________  _______ _   ______________   _____ __________  ________  ___________
   / ____/ / / / ___// | / / ____/_  __/  / ___// ____/ __ \/  _/ __ \/_  __/ ___/
