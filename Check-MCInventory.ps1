@@ -19,10 +19,13 @@
 #
 
 
-param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled, [switch]$logging)
+param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled, [switch]$logging, $logServerAddress='localhost', $logServerPort=8080, [switch]$logServer, $logServerSite="/some/post", [switch]$getServerJob, $jobServerSiteName="/")
 $counter = 1
-
-cls
+$targetServerUri = "http://" + $logServerAddress + ":" + $logServerPort + $logServerSite
+$targetJobServerUri = "http://" + $logServerAddress + ":" + $logServerPort + $jobServerSiteName
+write-output "targetServerUri is printed below"
+#$targetServerUri
+#cls
 
 write-output "
 
@@ -35,6 +38,17 @@ write-output "
                                                                                  "
 
 #Function to invoke the HTTP GET and determine if the item is in stock
+function logToServer
+	{
+		$postParams = @{host=$env:computername;title=$title;stockBoolean=$inStock;uri=$productUri}
+		#Write-Output "Displaying postParams"
+		#$postParams
+		#Write-Output "targetServerUri is $targetServerUri"
+		$logPostRequest = Invoke-WebRequest -Uri $targetServerUri -Method POST -Body $postParams
+		return $logPostRequest
+	}
+
+
 function getMcHtml
 	{
 		$functionLog
@@ -46,13 +60,30 @@ function getMcHtml
 		$request = Invoke-WebRequest -URI $productUri
 		#Get the title out of the ParsedHtml data
 		$title = $request.ParsedHtml.title
+		IF ($productUri -like '*microcenter*')
+			{
+				Write-Output "Detected MicroCenter!!!"
+				$request = $request.toString() -split "[`r`n]"
+				$request = $request | Select-String "'inStock'"
+			}
+		IF ($productUri -like '*newegg*')
+			{
+				Write-Output "Detected NewEgg!!!"
+				$request = $request.toString() -split "[`r`n]"
+				$request = $request | select-string "`"Instock`":(true|false),"
+				$request = $request.toString() -split ","
+				$request = $request | select-string Instock
+			}
 		#Chop the HTML content into lines
-		$request = $request.toString() -split "[`r`n]"
+		#$request = $request.toString() -split "[`r`n]"
 		#Find the inStock line
-		$request = $request | Select-String "'inStock'"
+		#$request = $request | Select-String "'inStock'"
 		
 		write-output "***********************************************"
 		Write-Output $title
+		Write-Output $productUri
+		Write-Output "request variable is below"
+		$request
 			$functionLog = $functionLog + "***********************************************"
 			$functionLog = $functionLog + "`n" + $title
 			$functionLog = $functionLog + "`n" + $productUri
@@ -62,7 +93,7 @@ function getMcHtml
 			{
 				write-output "Item is not in stock at $date..."
 					$functionLog = $functionLog + "`n" + "Item is not in stock at " + $date + "..."
-				#write-output "Test result is $request"
+				write-output "Test result is $request"
 				$inStock = $false
 				
 				IF ($logging -eq $true)
@@ -77,6 +108,12 @@ function getMcHtml
 							}
 						$functionLog | out-file $fullLogPath -append
 					}
+				
+				IF ($logServer -eq $true)
+					{
+						logToServer($logServerAddress,$logServerPort,$logServerSite,$title,$inStock,$productUri,$targetServerUri)
+					}
+				
 			}
 		
 		#If the item IS currently in stock
@@ -110,6 +147,11 @@ function getMcHtml
 							}
 						$functionLog | out-file $fullLogPath -append
 					}
+				#Write-Output "logServer is $logServer"
+				IF ($logServer -eq $true)
+					{
+						logToServer($logServerAddress,$logServerPort,$logServerSite,$title,$inStock,$productUri,$targetServerUri)
+					}
 				
 				pause
 				Remove-Variable title -Force
@@ -134,9 +176,19 @@ DO
 				#Sleep in between each HTTP GET request
 				Start-Sleep -seconds $repeatInterval
 			}
+		IF ($getServerJob -eq $true)
+			{
+				write-output "targetJobServerUri is below"
+				$targetJobServerUri
+				$target = Invoke-WebRequest -Uri $targetJobServerUri -Method GET
+				$target = $target.rawcontent -split "[`r`n]"
+				[string]$targetResult = $target | select-string -pattern '(https://.*$)'
+				$productUri = $targetResult
+				
+			}
 		
 		#Call the main function
-		getMcHtml($productUri,$logging)
+		getMcHtml($productUri,$logging,$logServer,$logServerAddress,$logServerPort,$logServerSite,$targetServerUri)
 		
 		#Increment the counter so we honor repeatCount
 		$counter = $counter + 1
