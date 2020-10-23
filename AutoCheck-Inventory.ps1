@@ -80,8 +80,8 @@ function getMcHtml
 		write-output "***********************************************"
 		Write-Output $title
 		Write-Output $productUri
-		Write-Output "request variable is below"
-		$request
+		#Write-Output "request variable is below"
+		#$request
 			$functionLog = $functionLog + "***********************************************"
 			$functionLog = $functionLog + "`n" + $title
 			$functionLog = $functionLog + "`n" + $productUri
