@@ -42,7 +42,7 @@ function logToServer
 		#Write-Output "Displaying postParams"
 		#$postParams
 		#Write-Output "targetServerUri is $targetServerUri"
-		$logPostRequest = Invoke-WebRequest -Uri $targetServerUri -Method POST -Body $postParams
+		$logPostRequest = Invoke-WebRequest -Uri $targetServerUri -Method POST -Body $postParams -UseBasicParsing
 		return $logPostRequest
 	}
 
@@ -55,7 +55,7 @@ function getMcHtml
 		$logFilename = "mcinventory.txt"
 		$date = Get-Date
 		#Get the HTML content of the provided product page
-		$request = Invoke-WebRequest -URI $productUri
+		$request = Invoke-WebRequest -URI $productUri -UseBasicParsing
 		#Get the title out of the ParsedHtml data
 		$title = $request.ParsedHtml.title
 		IF ($productUri -like '*microcenter*')
@@ -178,7 +178,7 @@ DO
 			{
 				write-output "targetJobServerUri is below"
 				$targetJobServerUri
-				$target = Invoke-WebRequest -Uri $targetJobServerUri -Method GET
+				$target = Invoke-WebRequest -Uri $targetJobServerUri -Method GET -UseBasicParsing
 				$target = $target.rawcontent -split "[`r`n]"
 				[string]$targetResult = $target | select-string -pattern '(https://.*$)'
 				$productUri = $targetResult
