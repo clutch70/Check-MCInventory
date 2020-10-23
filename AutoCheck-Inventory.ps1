@@ -24,8 +24,6 @@ $counter = 1
 $targetServerUri = "http://" + $logServerAddress + ":" + $logServerPort + $logServerSite
 $targetJobServerUri = "http://" + $logServerAddress + ":" + $logServerPort + $jobServerSiteName
 write-output "targetServerUri is printed below"
-#$targetServerUri
-#cls
 
 write-output "
 
