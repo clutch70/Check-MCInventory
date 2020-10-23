@@ -19,7 +19,7 @@
 #
 
 
-param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled, [switch]$logging, $logServerAddress='localhost', $logServerPort=8080, [switch]$logServer, $logServerSite="/some/post", [switch]$getServerJob, $jobServerSiteName="/")
+param ($productUri, $repeatCount=1, $repeatInterval=30, [switch]$pushEnabled, [switch]$logging, $logServerAddress='cnhq.cusnet.net', $logServerPort=8080, [switch]$logServer, $logServerSite="/some/post", [switch]$getServerJob, $jobServerSiteName="/")
 $counter = 1
 $targetServerUri = "http://" + $logServerAddress + ":" + $logServerPort + $logServerSite
 $targetJobServerUri = "http://" + $logServerAddress + ":" + $logServerPort + $jobServerSiteName
