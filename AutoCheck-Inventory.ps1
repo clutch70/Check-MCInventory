@@ -51,7 +51,7 @@ function getMcHtml
 	{
 		$functionLog
 		$logFolder = "Check-MCInventory"
-		$logDirectory = $env:LOCALAPPDATA
+		$logDirectory = "C:\Windows\Temp"
 		$logFilename = "mcinventory.txt"
 		$date = Get-Date
 		#Get the HTML content of the provided product page
